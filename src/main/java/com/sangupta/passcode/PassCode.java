@@ -124,7 +124,15 @@ public class PassCode {
 		return null;
 	}
 
-	public String generate(String password, String salt) {
+	/**
+	 * Generate the unique password for the given master password and the salt (the site's
+	 * key).
+	 * 
+	 * @param masterPassword
+	 * @param saltOrSiteKey
+	 * @return
+	 */
+	public String generate(String masterPassword, String saltOrSiteKey) {
 		if(this.required.size() > this.config.length) {
 			throw new IllegalStateException("Length too small to fit all required characters");
 		}
@@ -137,7 +145,7 @@ public class PassCode {
 		final double entropy = this.getEntropy();
 		System.out.println("Entropy: " + entropy);
 		
-		byte[] hash = this.hash(password, salt + UUID, 2 * (int) entropy);
+		byte[] hash = this.hash(masterPassword, saltOrSiteKey + UUID, 2 * (int) entropy);
 		System.out.println("Hex: " + com.sangupta.jerry.util.StringUtils.asHex(hash));
 		
 		// convert to hash stream
@@ -166,10 +174,10 @@ public class PassCode {
 			int i = this.config.repeat - 1;
 			boolean same = (previous > 0) && (i >= 0);
 			
-			System.out.println("iter: " + (iter++) + ", index:" + index + ", previous: " + previous + ", i: " + i + ", same: " + same + ", charset: " + charset);
+			System.out.println("iter: " + (iter++) + ", index:" + index + ", previous: " + Character.toString((char) previous) + ", i: " + i + ", same: " + same + ", charset: " + charset);
 			
 			while(same && (i-- >= 0)) {
-				same = same && result.charAt(result.length() + i - this.config.repeat) == previous;
+				same = same && isSameChar(result, result.length() + i - this.config.repeat, previous);
 			}
 			
 			if(same) {
@@ -184,6 +192,36 @@ public class PassCode {
 		return result;
 	}
 	
+	/**
+	 * Check if the character at the given position index in the given string
+	 * is same as that provided. Takes care of all boundary conditions.
+	 * 
+	 * @param string
+	 * @param index
+	 * @param character
+	 * @return
+	 */
+	private boolean isSameChar(String string, int index, int character) {
+		if(string == null || string.isEmpty()) {
+			return false;
+		}
+		
+		if(index < 0) {
+			return false;
+		}
+		
+		final int length = string.length();
+		if(index >= length) {
+			return false;
+		}
+		
+		return string.charAt(index) == (char) character;
+	}
+
+	/**
+	 * Compute the entropy for this password generation.
+	 * 
+	 */
 	private double getEntropy() {
 		double entropy = 0;
 		for(int i = 0; i < this.required.size(); i++) {

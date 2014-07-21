@@ -34,7 +34,7 @@ public class Config {
 	/**
 	 * The exact length of the password
 	 */
-	public int length = 20;
+	public int length = 10;
 	
 	/**
 	 * The maximum times a character that can be repeated
