@@ -21,6 +21,9 @@
 
 package com.sangupta.passcode;
 
+import io.airlift.command.ParseOptionMissingException;
+import io.airlift.command.SingleCommand;
+
 
 /**
  * Command line tool for Password generation. Reads parameters from
@@ -33,21 +36,20 @@ package com.sangupta.passcode;
 public class PassCodeMain {
 	
 	public static void main(String[] args) {
-//		String siteCode = ConsoleUtils.readLine("Site code: ", true);
-//		if(AssertUtils.isEmpty(siteCode)) {
-//			System.out.println("No site code entered, nothing to do!");
-//			return;
-//		}
-//		
-//		String passPhrase = ConsoleUtils.readPassword("Passphrase: ", true);
-//		if(AssertUtils.isEmpty(passPhrase)) {
-//			System.out.println("No passphrase entered, nothing to do!");
-//			return;
-//		}
+		Config config = SingleCommand.singleCommand(Config.class).parse(args);
 		
-		Config config = new Config();
-		PassCode passCode = new PassCode(config);
-		System.out.println(passCode.generate("test", "google"));
+		if(config.helpOption.showHelpIfRequested()) {
+			return;
+		}
+		
+		try {
+			PassCode passCode = new PassCode(config);
+			System.out.println("Password: " + passCode.generate("test", "google"));
+		} catch(ParseOptionMissingException e) {
+			System.out.println("HTTP Toolbox: " + e.getMessage());
+			System.out.println("Use -h for usage instructions.");
+//			Help.help(command);
+		}
 	}
 	
 }

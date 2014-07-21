@@ -37,6 +37,7 @@ import org.apache.commons.lang3.StringUtils;
  * @author sangupta
  *
  */
+
 public class PassCode {
 	
 	private static final String UUID = "e87eb0f4-34cb-46b9-93ad-766c5ab063e7";
@@ -74,8 +75,8 @@ public class PassCode {
 		
 		initialize();
 		
-		System.out.println("required: " + this.required);
-		System.out.println("allowed: " + this.allowed);
+//		System.out.println("required: " + this.required);
+//		System.out.println("allowed: " + this.allowed);
 	}
 
 	private void initialize() {
@@ -143,10 +144,10 @@ public class PassCode {
 		
 		// get hash
 		final double entropy = this.getEntropy();
-		System.out.println("Entropy: " + entropy);
+//		System.out.println("Entropy: " + entropy);
 		
 		byte[] hash = this.hash(masterPassword, saltOrSiteKey + UUID, 2 * (int) entropy);
-		System.out.println("Hex: " + com.sangupta.jerry.util.StringUtils.asHex(hash));
+//		System.out.println("Hex: " + com.sangupta.jerry.util.StringUtils.asHex(hash));
 		
 		// convert to hash stream
 		HashStream stream = new HashStream(hash);
@@ -157,7 +158,7 @@ public class PassCode {
 		// adapted for https://github.com/jcoglan/vault
 		
 		String result = "";
-		int iter = 1;
+//		int iter = 1;
 		int previous = 0;
 		
 		
@@ -174,7 +175,7 @@ public class PassCode {
 			int i = this.config.repeat - 1;
 			boolean same = (previous > 0) && (i >= 0);
 			
-			System.out.println("iter: " + (iter++) + ", index:" + index + ", previous: " + Character.toString((char) previous) + ", i: " + i + ", same: " + same + ", charset: " + charset);
+//			System.out.println("iter: " + (iter++) + ", index:" + index + ", previous: " + Character.toString((char) previous) + ", i: " + i + ", same: " + same + ", charset: " + charset);
 			
 			while(same && (i-- >= 0)) {
 				same = same && isSameChar(result, result.length() + i - this.config.repeat, previous);
@@ -229,7 +230,7 @@ public class PassCode {
 		    entropy += Math.ceil(Math.log(this.required.get(i).length()) / LOG_2);	
 		}
 		
-		System.out.println("entropy: " + entropy);
+//		System.out.println("entropy: " + entropy);
 		return entropy;
 	}
 }

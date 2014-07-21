@@ -46,7 +46,7 @@ public class HashStream {
 	
 	public HashStream(byte[] hash) {
 		this.bits = asBinary(hash);
-		System.out.println("Binary: " + bits);
+//		System.out.println("Binary: " + bits);
 		
 		this.bases.put(2, map(this.bits, 2));
 	}
