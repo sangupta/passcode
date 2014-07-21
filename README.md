@@ -1,6 +1,8 @@
 PassCode
 ==========
 
+## NOTE: THIS IS STILL UNDER DEVELOPMENT - SOME BUGS DO EXIST
+
 Password generator for desktops.
 
 `passcode` is an application/library that can be used to generate highly-secure random password
