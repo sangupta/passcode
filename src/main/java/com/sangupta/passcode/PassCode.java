@@ -42,43 +42,105 @@ import com.sangupta.jerry.util.AssertUtils;
 
 public class PassCode {
 	
+	/**
+	 * UUID being used by the vault code base
+	 */
+	private static final String VAULT_UUID = "e87eb0f4-34cb-46b9-93ad-766c5ab063e7";
+	
+	/**
+	 * The default number of iterations to be performed
+	 */
 	private static final int NUM_INTERATIONS = 8;
 	
+	/**
+	 * Log of 2
+	 */
 	private static final double LOG_2 = Math.log(2);
 	
+	/**
+	 * The lower-case character set
+	 */
 	private static final String LOWER = "abcdefghijklmnopqrstuvwxyz";
 	
+	/**
+	 * The upper-case character set
+	 */
 	private static final String UPPER = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-	
+
+	/**
+	 * All alphabets
+	 */
 	private static final String ALPHA = LOWER + UPPER;
 	
+	/**
+	 * All numerals
+	 */
 	private static final String NUMBER = "0123456789";
 	
+	/**
+	 * All alphabets and numerals
+	 */
 	private static final String ALPHANUM = ALPHA + NUMBER;
 	
+	/**
+	 * Blank space
+	 */
 	private static final String SPACE = " ";
 	
+	/**
+	 * Dashes - hyphen and underscore
+	 */
 	private static final String DASH = "-_";
 	
+	/**
+	 * All special symbols
+	 */
 	private static final String SYMBOL = "!\"#$%&\'()*+,./:;<=>?@[\\]^{|}~" + DASH;
 	
+	/**
+	 * The 92-character set that is our entire entry base
+	 */
 	private static final String ALL = ALPHANUM + SPACE + SYMBOL;
 	
+	/**
+	 * The configuration to be used to generate passwords
+	 */
 	private final Config config;
 	
+	/**
+	 * The set of allowed characters
+	 */
 	private String allowed = ALL;
 	
+	/**
+	 * The list of required character sets
+	 */
 	private final List<String> required = new ArrayList<String>();
 	
+	/**
+	 * Instantiate a new {@link PassCode} instance for the given configuration.
+	 * 
+	 * @param config
+	 */
 	public PassCode(Config config) {
 		this.config = config;
 		
 		initialize();
 		
-//		System.out.println("required: " + this.required);
-//		System.out.println("allowed: " + this.allowed);
+		// validate
+		if(this.config.iterations <= 0) {
+			System.out.println("Using default number of iterations as: " + NUM_INTERATIONS);
+			this.config.iterations = NUM_INTERATIONS;
+		}
+
+		if(AssertUtils.isEmpty(config.uuid)) {
+			config.uuid = VAULT_UUID;
+		}
 	}
 
+	/**
+	 * Initialize the instance
+	 */
 	private void initialize() {
 		updateAllowedAndRequired(LOWER, config.lower);
 		updateAllowedAndRequired(UPPER, config.upper);
@@ -96,6 +158,15 @@ public class PassCode {
 		}
 	}
 	
+	/**
+	 * Update the set of allowed and required characters based on configuration
+	 * 
+	 * @param charset
+	 *            the character set to be used
+	 * @param number
+	 *            the number of times it should be present in password
+	 * 
+	 */
 	private void updateAllowedAndRequired(final String charset, int number) {
 		if(number < 0) {
 			return;
@@ -111,10 +182,24 @@ public class PassCode {
 		}
 	}
 	
+	/**
+	 * Hash the given password.
+	 * 
+	 * @param password
+	 *            the master password or passphrase
+	 * 
+	 * @param salt
+	 *            the salt to be used
+	 * 
+	 * @param entropy
+	 *            the entropy to be used
+	 * 
+	 * @return the byte-array representing the hash
+	 */
 	private byte[] hash(String password, String salt, int entropy) {
 		// generate the hash
 		try {
-			PBEKeySpec spec = new PBEKeySpec(password.toCharArray(), salt.getBytes(), NUM_INTERATIONS, entropy + 12);
+			PBEKeySpec spec = new PBEKeySpec(password.toCharArray(), salt.getBytes(), this.config.iterations, entropy + 12);
 	        SecretKeyFactory skf = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
 	        return skf.generateSecret(spec).getEncoded();
 		} catch (GeneralSecurityException e) {
@@ -126,12 +211,16 @@ public class PassCode {
 	}
 
 	/**
-	 * Generate the unique password for the given master password and the salt (the site's
-	 * key).
+	 * Generate the unique password for the given master password and the salt
+	 * (the site's key).
 	 * 
 	 * @param masterPassword
+	 *            the master password or passphrase to use
+	 * 
 	 * @param saltOrSiteKey
-	 * @return
+	 *            the site based keyword to use
+	 * 
+	 * @return the generated password as {@link String}
 	 */
 	public String generate(String masterPassword, String saltOrSiteKey) {
 		if(this.required.size() > this.config.length) {
@@ -175,7 +264,6 @@ public class PassCode {
 //			} else {
 //				previous = 0;
 //			}
-			
 			
 			int i = this.config.repeat - 1;
 			boolean same = (previous > 0) && (i >= 0);

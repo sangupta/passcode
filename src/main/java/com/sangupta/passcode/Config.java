@@ -103,6 +103,9 @@ public class Config {
 	@Option(name = "--uuid", description = "Use the given UUID for password hashing")
 	public String uuid;
 	
+	@Option(name = "--iter", description = "Number of iterations to be performed for hashing")
+	public int iterations = 0;
+	
 	@Arguments(required = false, description = "The keyword of the site/app for which we need to generate the password")
 	public String siteKeyWord;
 	
