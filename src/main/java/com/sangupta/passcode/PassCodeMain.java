@@ -38,6 +38,11 @@ import io.airlift.command.SingleCommand;
  */
 public class PassCodeMain {
 	
+	/**
+	 * UUID being used by the vault code base
+	 */
+	private static final String VAULT_UUID = "e87eb0f4-34cb-46b9-93ad-766c5ab063e7";
+	
 	public static void main(String[] args) {
 		Config config = SingleCommand.singleCommand(Config.class).parse(args);
 		
@@ -63,6 +68,10 @@ public class PassCodeMain {
 			if(AssertUtils.isEmpty(password)) {
 				System.out.println("No pass phrase selected, nothing to generate... exiting!");
 				return;
+			}
+			
+			if(AssertUtils.isEmpty(config.uuid)) {
+				config.uuid = VAULT_UUID;
 			}
 			
  			PassCode passCode = new PassCode(config);

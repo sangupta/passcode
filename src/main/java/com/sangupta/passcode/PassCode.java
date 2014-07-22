@@ -30,6 +30,8 @@ import javax.crypto.spec.PBEKeySpec;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.sangupta.jerry.util.AssertUtils;
+
 /**
  * Class that actually computes the password based on
  * a given set of options.
@@ -39,8 +41,6 @@ import org.apache.commons.lang3.StringUtils;
  */
 
 public class PassCode {
-	
-	private static final String UUID = "e87eb0f4-34cb-46b9-93ad-766c5ab063e7";
 	
 	private static final int NUM_INTERATIONS = 8;
 	
@@ -142,11 +142,16 @@ public class PassCode {
 			throw new IllegalStateException("No characters available to create a password");
 		}
 		
+		// check for uuid append
+		if(AssertUtils.isNotEmpty(this.config.uuid)) {
+			saltOrSiteKey = saltOrSiteKey + this.config.uuid;
+		}
+		
 		// get hash
 		final double entropy = this.getEntropy();
 //		System.out.println("Entropy: " + entropy);
 		
-		byte[] hash = this.hash(masterPassword, saltOrSiteKey + UUID, 2 * (int) entropy);
+		byte[] hash = this.hash(masterPassword, saltOrSiteKey, 2 * (int) entropy);
 //		System.out.println("Hex: " + com.sangupta.jerry.util.StringUtils.asHex(hash));
 		
 		// convert to hash stream

@@ -100,6 +100,9 @@ public class Config {
 	@Option(name = "-sc", description = "Secure input of site/app keyword")
 	public boolean secure = false;
 	
+	@Option(name = "--uuid", description = "Use the given UUID for password hashing")
+	public String uuid;
+	
 	@Arguments(required = false, description = "The keyword of the site/app for which we need to generate the password")
 	public String siteKeyWord;
 	
