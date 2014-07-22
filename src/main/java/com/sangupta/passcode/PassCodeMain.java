@@ -21,11 +21,11 @@
 
 package com.sangupta.passcode;
 
-import com.sangupta.jerry.util.AssertUtils;
-import com.sangupta.jerry.util.ConsoleUtils;
-
 import io.airlift.command.ParseOptionMissingException;
 import io.airlift.command.SingleCommand;
+
+import com.sangupta.jerry.util.AssertUtils;
+import com.sangupta.jerry.util.ConsoleUtils;
 
 
 /**
@@ -66,11 +66,14 @@ public class PassCodeMain {
 			}
 			
  			PassCode passCode = new PassCode(config);
-			System.out.println("Password: " + passCode.generate(password, config.siteKeyWord));
+ 			final String generatedPassword = passCode.generate(password, config.siteKeyWord);
+ 			
+			System.out.println("Password: " + generatedPassword);
+			return;
 		} catch(ParseOptionMissingException e) {
 			System.out.println("HTTP Toolbox: " + e.getMessage());
 			System.out.println("Use -h for usage instructions.");
-//			Help.help(command);
+			return;
 		}
 	}
 	
