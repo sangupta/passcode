@@ -29,12 +29,15 @@ For more information on the project, refer to https://github.com/sangupta/passco
 Features
 --------
 
-* Simple to use command-line app
-* Passwords can be made compatible to the `vault` project
+* Simple to use command-line application
+* Passwords can be made compatible to the `vault` project - by changing the UUID
 * Configure number of upper/lower-case alphabets, numbers, special characters etc
-* May use your own private SSH key
 * Save your settings in a dot file - not the passwords though
 
+RoadMap
+-------
+
+* Use SSH based keys
 
 Downloads
 ---------
