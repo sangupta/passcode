@@ -38,4 +38,5 @@ target/*
 */.gitignore
 .settings/*
 /target
-com/sangupta/jerry/*
+dependency-reduced-pom.xml
+

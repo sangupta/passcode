@@ -21,6 +21,9 @@
 
 package com.sangupta.passcode;
 
+import com.sangupta.jerry.util.AssertUtils;
+import com.sangupta.jerry.util.ConsoleUtils;
+
 import io.airlift.command.ParseOptionMissingException;
 import io.airlift.command.SingleCommand;
 
@@ -43,8 +46,27 @@ public class PassCodeMain {
 		}
 		
 		try {
-			PassCode passCode = new PassCode(config);
-			System.out.println("Password: " + passCode.generate("test", "google"));
+			if(AssertUtils.isEmpty(config.siteKeyWord)) {
+				if(config.secure) {
+					config.siteKeyWord = ConsoleUtils.readPassword("Site keyword: ", true);
+				} else {
+					config.siteKeyWord = ConsoleUtils.readLine("Site keyword: ", true);
+				}
+				
+				if(AssertUtils.isEmpty(config.siteKeyWord)) {
+					System.out.println("No site keyword selected, nothing to do... exiting!");
+					return;
+				}
+			}
+			
+			String password = ConsoleUtils.readPassword("Passphrase: ", true);
+			if(AssertUtils.isEmpty(password)) {
+				System.out.println("No pass phrase selected, nothing to generate... exiting!");
+				return;
+			}
+			
+ 			PassCode passCode = new PassCode(config);
+			System.out.println("Password: " + passCode.generate(password, config.siteKeyWord));
 		} catch(ParseOptionMissingException e) {
 			System.out.println("HTTP Toolbox: " + e.getMessage());
 			System.out.println("Use -h for usage instructions.");

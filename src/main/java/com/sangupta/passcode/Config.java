@@ -23,6 +23,7 @@ package com.sangupta.passcode;
 
 import javax.inject.Inject;
 
+import io.airlift.command.Arguments;
 import io.airlift.command.Command;
 import io.airlift.command.HelpOption;
 import io.airlift.command.Option;
@@ -95,5 +96,11 @@ public class Config {
 	 */
 	@Option(name = {"-s", "--symbol"}, description = "Minimum number of special symbols required")
 	public int symbol = -1;
-
+	
+	@Option(name = "-sc", description = "Secure input of site/app keyword")
+	public boolean secure = false;
+	
+	@Arguments(required = false, description = "The keyword of the site/app for which we need to generate the password")
+	public String siteKeyWord;
+	
 }
